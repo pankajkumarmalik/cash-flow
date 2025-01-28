@@ -47,7 +47,7 @@ const AccountChart = ({ transactions }) => {
 
     // Group transactions by date
     const grouped = filtered.reduce((acc, transaction) => {
-      const date = format(new Date(transaction.date), "MMM dd");
+      const date = format(new Date(transaction.date), "PP");
       if (!acc[date]) {
         acc[date] = { date, income: 0, expense: 0 };
       }
@@ -138,7 +138,10 @@ const AccountChart = ({ transactions }) => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="date" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={(tick) => format(new Date(tick), "dd MMM")}
+              />
               <YAxis
                 fontSize={12}
                 tickLine={false}
@@ -146,7 +149,10 @@ const AccountChart = ({ transactions }) => {
                 tickFormatter={(value) => `$${value}`}
               />
               <Tooltip
-                formatter={(value) => [`$${value}`, undefined]}
+                formatter={(value) => [
+                  `$${parseFloat(value).toFixed(2)}`,
+                  undefined,
+                ]}
                 contentStyle={{
                   backgroundColor: "hsl(var(--popover))",
                   border: "1px solid hsl(var(--border))",

@@ -371,7 +371,7 @@ const TransactionTable = ({ transactions }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {format(new Date(transaction.date), "MMM d, yyyy")}
+                    {format(new Date(transaction.date), "PP")}
                   </TableCell>
                   <TableCell>{transaction.description}</TableCell>
                   <TableCell className="capitalize">
@@ -420,7 +420,7 @@ const TransactionTable = ({ transactions }) => {
                               <div>
                                 {format(
                                   new Date(transaction.nextRecurringDate),
-                                  "MMM d, yyyy"
+                                  "PPP"
                                 )}
                               </div>
                             </div>
