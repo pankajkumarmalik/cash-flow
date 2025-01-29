@@ -71,6 +71,7 @@ export async function createTransaction(data) {
       const newTransaction = await tx.transaction.create({
         data: {
           ...data,
+          lastProcessed: new Date(),
           userId: user.id,
           nextRecurringDate:
             data.isRecurring && data.recurringInterval
