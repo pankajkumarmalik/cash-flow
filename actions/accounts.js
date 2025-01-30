@@ -45,7 +45,7 @@ export async function updateDefaultAccount(accountId) {
       data: { isDefault: true },
     });
 
-    //revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
     return { success: true, data: serializeTransaction(account) };
   } catch (error) {
     return { success: false, error: error.message };

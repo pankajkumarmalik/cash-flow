@@ -16,6 +16,8 @@ const DashboardPage = () => {
   const [budgetData, setBudgetData] = useState(null);
   const [defaultAccountData, setDefaultAccountData] = useState();
 
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +39,7 @@ const DashboardPage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refresh]); // 👈 Depend on `refresh`
 
   return (
     <div className="space-y-8">
@@ -59,7 +61,7 @@ const DashboardPage = () => {
 
       {/* Accounts Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <CreateAccountDrawer>
+        <CreateAccountDrawer onSuccess={() => setRefresh((prev) => !prev)}>
           <Card className="hover:shadow-md transition-shadow cursor-pointer border-dashed">
             <CardContent className="flex flex-col items-center justify-center text-muted-foreground h-full pt-5">
               <Plus className="h-10 w-10 mb-2" />
@@ -70,7 +72,13 @@ const DashboardPage = () => {
 
         {accountsData.length > 0 &&
           accountsData?.map((account) => {
-            return <AccountCard key={account.id} account={account} />;
+            return (
+              <AccountCard
+                key={account.id}
+                account={account}
+                onSuccess={() => setRefresh((prev) => !prev)}
+              />
+            );
           })}
       </div>
     </div>

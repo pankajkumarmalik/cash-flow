@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const COLORS = [
@@ -36,9 +36,14 @@ const COLORS = [
 ];
 
 const DashboardOverview = ({ accounts, transactions }) => {
-  const [selectedAccountId, setSelectedAccountId] = useState(
-    accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
-  );
+  const [selectedAccountId, setSelectedAccountId] = useState(accounts[0]?.id);
+
+  useEffect(() => {
+    const defaultAccount = accounts.find((a) => a.isDefault)?.id;
+    if (defaultAccount) {
+      setSelectedAccountId(defaultAccount);
+    }
+  }, [accounts]);
 
   //Filter transactions for selected account
   const accountTransactions = transactions.filter(

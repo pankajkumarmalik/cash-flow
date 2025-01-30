@@ -26,8 +26,10 @@ import useFetch from "@/hooks/use-fetch";
 import { createAccount } from "@/actions/dashboard";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const CreateAccountDrawer = ({ children }) => {
+const CreateAccountDrawer = ({ children, onSuccess }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const {
@@ -70,6 +72,8 @@ const CreateAccountDrawer = ({ children }) => {
 
   const onSubmit = async (data) => {
     await createAccountFn(data);
+    //router.refresh();
+    onSuccess();
   };
   return (
     <Drawer open={open} onOpenChange={setOpen}>

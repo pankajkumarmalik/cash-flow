@@ -15,7 +15,7 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
 
-const AccountCard = ({ account }) => {
+const AccountCard = ({ account, onSuccess }) => {
   const { name, type, balance, id, isDefault } = account;
 
   const {
@@ -34,6 +34,7 @@ const AccountCard = ({ account }) => {
     }
 
     await updateDefaultFn(id);
+    onSuccess();
   };
 
   useEffect(() => {
