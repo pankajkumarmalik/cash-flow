@@ -1,28 +1,48 @@
+"use client";
+
 import { getDashboardData, getUserAccounts } from "@/actions/dashboard";
 import CreateAccountDrawer from "@/components/create-account-drawer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import AccountCard from "./_components/account-card";
 import { getCurrentBudget } from "@/actions/budget";
 import BudgetProgress from "./_components/budget-progress";
 import DashboardOverview from "./_components/transaction-overview";
 
-const DashboardPage = async () => {
-  const accounts = await getUserAccounts();
+const DashboardPage = () => {
+  const [transactionData, setTransactionData] = useState([]);
+  const [accountsData, setAccountsData] = useState([]);
+  const [budgetData, setBudgetData] = useState(null);
+  const [defaultAccountData, setDefaultAccountData] = useState();
 
-  const defaultAccount = accounts?.find((account) => account.isDefault);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const accounts = await getUserAccounts();
+        setAccountsData(accounts);
 
-  let budgetData = null;
-  if (defaultAccount) {
-    budgetData = await getCurrentBudget(defaultAccount.id);
-  }
+        const defaultAccount = accounts?.find((account) => account.isDefault);
+        setDefaultAccountData(defaultAccount);
 
-  const transactions = await getDashboardData();
+        const transactions = await getDashboardData();
+        setTransactionData(transactions);
+        if (defaultAccount) {
+          const budget = await getCurrentBudget(defaultAccount.id);
+          setBudgetData(budget);
+        }
+      } catch (error) {
+        console.log("fetchData error", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="space-y-8">
       {/* Budget Progress */}
-      {defaultAccount && (
+      {defaultAccountData && (
         <BudgetProgress
           initialBudget={budgetData?.budget}
           currentExpenses={budgetData?.currentExpenses || 0}
@@ -32,8 +52,8 @@ const DashboardPage = async () => {
       {/* Overview */}
       <Suspense fallback={"Loading Overview..."}>
         <DashboardOverview
-          accounts={accounts}
-          transactions={transactions || []}
+          accounts={accountsData}
+          transactions={transactionData}
         />
       </Suspense>
 
@@ -48,8 +68,8 @@ const DashboardPage = async () => {
           </Card>
         </CreateAccountDrawer>
 
-        {accounts.length > 0 &&
-          accounts?.map((account) => {
+        {accountsData.length > 0 &&
+          accountsData?.map((account) => {
             return <AccountCard key={account.id} account={account} />;
           })}
       </div>
